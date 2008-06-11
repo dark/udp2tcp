@@ -1,0 +1,40 @@
+------------------------
+-- Readme for udp2tcp --
+------------------------
+$Id$
+
+Summary
+=========================
+
+udp2tcp is a small but versatile tool aimed at forward UDP datagrams over TCP,
+i.e., translate protocols to their TCP counterparts (DNS is a good example).
+Useful when the service you are looking for is listening also on TCP also 
+and your firewall mercilessly drops UDP datagrams.
+
+Website
+-------
+The official website is, at the moment:
+  http://udp2tcp.sourceforge.net/
+
+Copyright
+---------
+udp2tcp is Copyright (C) 2008 Marco Leogrande <add the proper mail address>
+
+License
+-------
+This program is released under the GNU General Public License version 3, as
+specified in the COPYING file. If you do not feel comfortable with the terms of
+this license, you are free to not to use this program :)
+
+Changelog
+---------
+Please see Changelog file.
+
+Installation
+------------
+Please read carefully the provided INSTALL file.
+
+FAQ, Documentation and support in general
+-----------------------------------------
+I'm working on it ;)
+

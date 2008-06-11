@@ -1,0 +1,42 @@
+---------------------------
+-- ChangeLog for udp2tcp --
+---------------------------
+$Id$
+
+This document contains all the changes made to udp2tcp in
+reverse chronological order, with the latest change at the top.
+All changes are grouped under the release they first appeared, or under
+the "unversioned" entry if they are still available only via SVN.
+
+-- Legend: --
+The first character in every line represents the type of change:
+  b = bug (a tracker ID is supplied in the description, if applicable)
+  f = feature request (ID supplied as well)
+  d = natural step in the developement (or: I always wanted to make that change
+      but never had the time)
+  c = correction (may vary from a typo to a serious code refactoring)
+  u = undefined (AKA programmer's lazyness proof)
+The second character denotes the priority of the change.
+  ! = critical (like the correction of a security bug)
+  + = important
+  = = normal (most changes fall into this category)
+  - = less important
+  . = niced at the highest value
+The third character represents the impact that the change had on the code.
+  ! = even the author does not understand what he did :)
+  + = some things might be broken after that
+  = = the impact is local and does not require a full check of alien code
+  - = the change is usually visible in a function scope and therefore is
+      harmless
+  . = typo
+-------------
+
+udp2tcp unversioned (live SVN - see revision at the top)
+=======================================
+c.- Usage of GCC function attributes
+
+
+udp2tcp 0.0.1 (2008-06-11)
+=======================================
+d=+ Initial release
+

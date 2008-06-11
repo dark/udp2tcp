@@ -51,7 +51,7 @@ int sock_createandbind(const int port);
 void loadTCPinfo(struct sockaddr** info, socklen_t* info_len, char* IP, int port);
 int do_child(int udp_sock_fd,void*buf,size_t buflen,const struct sockaddr* sender, const socklen_t sender_l,
 	     const struct sockaddr* recipient, const socklen_t recipient_l, filter_t filter);
-const char* filter_ret2str(const filter_ret_t);
+const char* filter_ret2str(const filter_ret_t) __attribute__((pure)) ;
 
 /* filters */
 filter_ret_t filter_dns(const void* in_buf, const size_t in_buf_len,void** out_buf, size_t* out_buf_len,
