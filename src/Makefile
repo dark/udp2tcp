@@ -1,6 +1,6 @@
 # Macro definitions
 PROJ = udp2tcp  # projectname
-LIBOBJ = library.o logging.o # library object files
+LIBOBJ = library.o logging.o filters.o # library object files
 OBJ = main.o udp2tcp.o $(LIBOBJ) # all the object files that make up the project
 
 ## executables ##
