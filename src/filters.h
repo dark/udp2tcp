@@ -39,11 +39,11 @@ typedef filter_ret_t(*filter_t)(const void* in_buf, const size_t in_buf_len,
 
 /* filtering related helper functions */
 const char* filter_ret2str(const filter_ret_t) __attribute__((pure));
-filter_t filter_name2impl(const char* name) __attribute__((pure));
+filter_t filter_name2impl(const char* name) __attribute__((pure, warn_unused_result));
 
 /* actually implemented filters */
 filter_ret_t filter_dns(const void* in_buf, const size_t in_buf_len,void** out_buf, size_t* out_buf_len,
-			void** ancillary_data, size_t* ancillary_len, dir_t direction);
+			void** ancillary_data, size_t* ancillary_len, dir_t direction) __attribute__((warn_unused_result));
 
 
 #endif /* #ifndef FILTER_H_INCLUDED */

@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <string.h>
 #include <syslog.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -49,6 +50,17 @@ struct _log_t{
 
   logf_do_t logf_do;
   logf_close_t logf_close;
+};
+
+/* == static variables == */
+static struct {
+  char* l_name;
+  log_level_t level;
+} levels[] = {
+  {"console",CONSOLE},
+  {"log",LOGFILE},
+  {"syslog",SYSLOG},
+  {NULL, -1} /* NULL-termination */
 };
 
 
@@ -145,4 +157,27 @@ void logging_do(const log_t l,const log_level_t level,
   l->logf_do(l,level,format,ap);
 #endif
   va_end(ap);
+}
+
+/* ** helper functions ** */
+log_provider_t logging_str2provider(char* p) {
+  int i=0;
+  while(levels[i].l_name!=NULL){
+    if (strcmp(p,levels[i].l_name) == 0)
+      return levels[i].level;
+    
+    i++;
+  }
+  return -1;
+}
+
+log_level_t logging_verbosity2level(int verbosity){
+  if (verbosity<=0)
+    return L_ERROR;
+  else if (verbosity == 1)
+    return L_WARN;
+  else if (verbosity == 2)
+    return L_INFO;
+  else
+    return L_DEBUG;
 }
