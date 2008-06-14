@@ -1,6 +1,6 @@
 /*
  udp2tcp
- Copyright (C) 2008 ~ Marco Leogrande
+ Copyright (C) 2008 Marco Leogrande
  $Id$
  
  This file is part of udp2tcp.
@@ -26,6 +26,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include "filters.h"
 #include "logging.h"
 #include "udp2tcp.h"
 
@@ -98,10 +99,10 @@ int main (int argc, char *argv[]){
       }
   }
   */
-  port_in=53;
+  port_in=1053;
   host_out="127.0.0.1";
   port_out=10053;
-  filter=filter_dns;
+  filter=filter_name2impl("dns");
   logger=logging_start(CONSOLE,L_DEBUG);
   F_INFO("Starting " PROJECT_SIG "\n");
   F_DEBUG("Will forward from UDP %d to TCP %s:%d\n",port_in,host_out,port_out);

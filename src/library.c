@@ -84,20 +84,3 @@ void loadTCPinfo(struct sockaddr** info, socklen_t* info_len, char* IP, int port
   /* copy informations back to caller */
   *info = (struct sockaddr*)local_info;
 }
-
-const char* filter_ret2str(const filter_ret_t r){
-  /* returns a reference to a statically-allocated buffer
-     that describes the provided filter_ret_t */
-  switch (r){
-  case ERROR:
-    return ("ERROR");
-  case IN_BUF_IS_OK:
-    return ("IN buffer OK");
-  case OUT_BUF_STAT:
-    return ("Static OUT buffer");
-  case OUT_BUF_DYN:
-    return ("Dynamic OUT buffer");
-  }
-
-  return ("APPLICATION BUG");
-}

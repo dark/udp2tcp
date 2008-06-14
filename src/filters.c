@@ -28,6 +28,46 @@
 extern char *program_name;
 extern log_t logger;
 
+/* == static variables == */
+static struct {
+  char* f_name;
+  filter_t f_impl;
+} filters[] = {
+  {"dns",filter_dns},
+  {NULL, NULL} /* NULL-termination */
+};
+  
+
+/* == helper functions == */
+const char* filter_ret2str(const filter_ret_t r){
+  /* returns a reference to a statically-allocated buffer
+     that describes the provided filter_ret_t */
+  switch (r){
+  case ERROR:
+    return ("ERROR");
+  case IN_BUF_IS_OK:
+    return ("IN buffer OK");
+  case OUT_BUF_STAT:
+    return ("Static OUT buffer");
+  case OUT_BUF_DYN:
+    return ("Dynamic OUT buffer");
+  }
+
+  return ("APPLICATION BUG");
+}
+
+filter_t filter_name2impl(const char* name){
+  int i=0;
+  while(filters[i].f_name!=NULL){
+    if (strcmp(name,filters[i].f_name) == 0)
+      return filters[i].f_impl;
+    
+    i++;
+  }
+  return NULL;
+}
+
+/* == implemented filters == */
 filter_ret_t filter_dns(const void* in_buf, const size_t in_buf_len,
 			void** out_buf, size_t* out_buf_len,
 			void** ancillary_data, size_t* ancillary_len, dir_t direction){

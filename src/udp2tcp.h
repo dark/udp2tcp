@@ -26,7 +26,7 @@
 #include "filters.h"
 
 #define PROJECT_NAME "udp2tcp"
-#define PROJECT_VER "0.0.1"
+#define PROJECT_VER "0.0.2-alpha"
 #define PROJECT_SIG PROJECT_NAME " v." PROJECT_VER ", by dark"
 
 /* defines a dafe value for the network data handling buffers */
