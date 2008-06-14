@@ -40,6 +40,7 @@ typedef filter_ret_t(*filter_t)(const void* in_buf, const size_t in_buf_len,
 /* filtering related helper functions */
 const char* filter_ret2str(const filter_ret_t) __attribute__((pure));
 filter_t filter_name2impl(const char* name) __attribute__((pure, warn_unused_result));
+void filter_enumerate();
 
 /* actually implemented filters */
 filter_ret_t filter_dns(const void* in_buf, const size_t in_buf_len,void** out_buf, size_t* out_buf_len,

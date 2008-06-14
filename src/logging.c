@@ -56,11 +56,12 @@ struct _log_t{
 static struct {
   char* l_name;
   log_level_t level;
+  char* description;
 } levels[] = {
-  {"console",CONSOLE},
-  {"log",LOGFILE},
-  {"syslog",SYSLOG},
-  {NULL, -1} /* NULL-termination */
+  {"console",CONSOLE,"Print data on console/terminal"},
+  {"log",    LOGFILE,"Dump all the informations on a text file"},
+  {"syslog", SYSLOG, "Use the system logger"},
+  {NULL, -1, NULL} /* NULL-termination */
 };
 
 

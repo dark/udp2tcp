@@ -32,9 +32,10 @@ extern log_t logger;
 static struct {
   char* f_name;
   filter_t f_impl;
+  char* description;
 } filters[] = {
-  {"dns",filter_dns},
-  {NULL, NULL} /* NULL-termination */
+  {"dns",filter_dns,"Translate DNS packets between the TCP and the UDP format"},
+  {NULL, NULL, NULL} /* NULL-termination */
 };
   
 

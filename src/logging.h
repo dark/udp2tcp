@@ -51,5 +51,6 @@ void logging_do(const log_t l,const log_level_t level,const char *format, ... );
 /* helper functions */
 log_provider_t logging_str2provider(char* p) __attribute__((pure,warn_unused_result));
 log_level_t logging_verbosity2level(int verbosity) __attribute__((pure));
+void logging_enumerate();
 
 #endif /* #ifndef LOGGING_H_INCLUDED */
