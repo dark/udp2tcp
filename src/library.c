@@ -19,9 +19,11 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -33,8 +35,110 @@ extern char *program_name;
 extern log_t logger;
 
 void print_usage(){
-  fprintf(stderr,"FIXME\n");
+  fprintf(stderr,"Usage: %s [-vvv] [-p <UDP_port>] [-h <TCP_dest_IP>] [-P <TCP_port>] [-f <filtername>] [-l <logger>]\n",
+	  program_name);
+  fprintf(stderr,
+	  "  -v   Increase the program verbosity: display warnings\n"
+	  "  -vv  Increase again the verbosity: display warnings and information messages\n"
+	  "  -vvv Increase the verbosity even more: display warnings, infos and debug messages\n"
+	  "  -p   The local UDP port on which listen for incoming datagrams (default: %d)\n"
+	  "  -h   The remote TCP port to which forward the data (default: %s)\n"
+	  "  -P   The remote TCP host to which forward the data (default: %d)\n"
+	  "  -f   The filter to apply to the data in both directions (default: none)\n"
+	  "       Use 'list' to enumerate all the filters\n"
+	  "  -l   The logger facility to use (default: FIXME_WITH_A_MACRO)\n"
+	  "       Use 'list' to enumerate all the logging facilities\n"
+	  ,DFLT_UDP_PORT, DFLT_TCP_HOST, DFLT_TCP_PORT);
 }
+
+
+int handle_commandline(int argc, char* argv[], int* port_in, char** host_out, int* port_out, filter_t* filter, int* verbosity){
+  int ret;
+  char *end_ptr;
+  
+  /* initialization */
+  *port_in =-1;
+  *port_out=-1;
+  *host_out=NULL;
+  *filter=NULL;
+  *verbosity=0;
+
+  opterr=0;
+  while ((ret = getopt (argc, argv, "vp:h:P:d:l:")) != -1){
+    switch (ret)
+      {
+      case 'v':
+	(*verbosity)++;
+	break;
+
+      case 'p':
+	if(*port_in == -1){
+	  *port_in=strtol(optarg, &end_ptr, 10);
+	  if ( isspace((int)optarg) || (*port_in)<0 || (*port_in)>65535 || (*end_ptr)!='\0'){
+	    fprintf(stderr, "Invalid numeric option in argument '%s'\n", optarg);
+	    return 1;
+	  }
+	}
+	else{
+	  fprintf(stderr, "Local UDP port defined multiple times: it was already %d\n", *port_in);
+	  return 1;
+	}
+	break;
+
+      case 'h':
+	if(*host_out == NULL){
+	  *host_out = strdup(optarg);
+	  if (*host_out == NULL){
+	    fprintf(stderr, "Error while allocating memory for host_out\n");
+	    return 1;
+	  }
+	}
+	else{
+	  fprintf(stderr, "Remote TCP host IP defined multiple times: it was already %s", *host_out);
+	  return 1;
+	}
+	break;
+
+      case 'P':
+	if(*port_out == -1){
+	  *port_out=strtol(optarg, &end_ptr, 10);
+	  if ( isspace((int)optarg) || (*port_out)<0 || (*port_out)>65535 || (*end_ptr)!='\0'){
+	    fprintf(stderr, "Invalid numeric option in argument '%s'\n", optarg);
+	    return 1;
+	  }
+	}
+	else{
+	  fprintf(stderr, "Local UDP port defined multiple times: it was already %d\n", *port_in);
+	  return 1;
+	}
+	break;
+
+#error handle -f
+#error handle -l
+
+      case '?':
+	if (optopt == 'p' || optopt == 'h' || optopt == 'P' || optopt == 'd' || optopt == 'l')
+	  fprintf (stderr, "Option -%c requires an argument.\n", optopt);
+	else if (isprint (optopt))
+	  fprintf (stderr, "Unknown option `-%c'.\n", optopt);
+	else
+	  fprintf (stderr,
+		   "Unknown option character `\\x%x'.\n",
+		   optopt);
+
+	print_usage();
+	return 1;
+	
+      default:
+	fprintf (stderr, "Application bug, notify mantainer.\n"
+		 "Received unexpected '%d'\n", ret);
+	return 1;
+      }
+  }
+
+  return 0;
+}
+
 
 int sock_createandbind(const int port){
   /* accept a valid port number (0-65535), returns the created listening socket */
@@ -66,6 +170,7 @@ int sock_createandbind(const int port){
 
   return sock;
 }
+
 
 void loadTCPinfo(struct sockaddr** info, socklen_t* info_len, char* IP, int port){
   /* use struct sockaddr_in */

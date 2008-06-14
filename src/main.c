@@ -23,6 +23,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -47,19 +48,23 @@ void handler_sigchld(int signum){
 
   /* because of Solaris way of doing things... */
   if ( signal(SIGCHLD, handler_sigchld) == SIG_ERR)
-    F_WARN("Unable to set the handler for SIGCHLD, this WILL lead to the proliferation of zombie children");
+    F_ERROR("Unable to set the handler for SIGCHLD, this WILL lead to the proliferation of zombie children");
 }
 
 int main (int argc, char *argv[]){
   int ret;
   int sock_fd;
 
-  int port_in, port_out;
-  char* host_out;
+  /* info from commandline */
+  int port_in= -1,
+    port_out = -1;
+  char* host_out = NULL;
+  filter_t filter = NULL;
+  int verbosity = 0;
+
   struct sockaddr* remote_info=NULL;
   socklen_t remote_info_len=0;
 
-  filter_t filter;
   char buffer[LOCAL_BUFFER_SIZE];
   ssize_t n_bytes_read;
   struct sockaddr from;
@@ -71,41 +76,21 @@ int main (int argc, char *argv[]){
   program_name = basename(argv[0]);
 
   /* ** handle command line ** */
-  /*  opterr=0;
-  while ((ret = getopt (argc, argv, "abc:")) != -1){
-    switch (ret)
-      {
-	/      case 'a':
-	aflag = 1;
-	break;
-      case 'b':
-	bflag = 1;
-	break;
-      case 'c':
-	cvalue = optarg;
-	break;*
-      case '?':
-	if (optopt == 'c')
-	  fprintf (stderr, "Option -%c requires an argument.\n", optopt);
-	/	else if (isprint (optopt)) *
-		fprintf (stderr, "Unknown option `-%c'.\n", optopt);
-		/	else
-	  fprintf (stderr,
-		   "Unknown option character `\\x%x'.\n",
-		   optopt);*
-	return 1;
-      default:
-	abort ();
-      }
-  }
-  */
-  port_in=1053;
-  host_out="127.0.0.1";
-  port_out=10053;
-  filter=filter_name2impl("dns");
+  ret = handle_commandline(argc, argv, &port_in, &host_out, &port_out, &filter, &verbosity);
+  if (ret!=0) /* an error has occurred */
+    return ret;
+  /* handle defaults */
+  if (port_in==-1)
+    port_in = DFLT_UDP_PORT;
+  if (host_out==NULL)
+    host_out= DFLT_TCP_HOST;
+  if (port_out==-1)
+    port_out= DFLT_TCP_PORT;
+
+#error Handle me!
   logger=logging_start(CONSOLE,L_DEBUG);
-  F_INFO("Starting " PROJECT_SIG "\n");
-  F_DEBUG("Will forward from UDP %d to TCP %s:%d\n",port_in,host_out,port_out);
+  F_INFO("Starting %s\n", PROJECT_SIG);
+  F_INFO("Will forward from UDP %d to TCP %s:%d\n",port_in,host_out,port_out);
 
   /* ** setup the listening socket ** */
   sock_fd=sock_createandbind(port_in);
@@ -119,7 +104,7 @@ int main (int argc, char *argv[]){
 
   /* ** set the SIGCHLD handler ** */
   if ( signal(SIGCHLD, handler_sigchld) == SIG_ERR)
-    F_WARN("Unable to set the handler for SIGCHLD, this WILL lead to the proliferation of zombie children");
+    F_ERROR("Unable to set the handler for SIGCHLD, this WILL lead to the proliferation of zombie children");
 
   /* ** while there are incoming messages, fork
      and let the child handle the incoming datagram ** */
@@ -145,6 +130,8 @@ int main (int argc, char *argv[]){
       ;
     }
   } /* while(1) */
+
+  /* should I free all the freeable? */
 
   return 0;
 }

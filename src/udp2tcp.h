@@ -33,7 +33,14 @@
 #define LOCAL_BUFFER_SIZE 1500
 #define INTERRUPTED_BY_SIGNAL (errno == EINTR || errno == ECHILD)
 
+/* default values */
+#define DFLT_UDP_PORT 53
+#define DFLT_TCP_HOST "127.0.0.1"
+#define DFLT_TCP_PORT 53
+
 /* helper functions */
+int handle_commandline(int argc, char* argv[],
+		       int* port_in, char** host_out, int* port_out, filter_t* filter, int* verbosity);
 int sock_createandbind(const int port);
 void loadTCPinfo(struct sockaddr** info, socklen_t* info_len, char* IP, int port);
 int do_child(int udp_sock_fd,void*buf,size_t buflen,const struct sockaddr* sender, const socklen_t sender_l,
