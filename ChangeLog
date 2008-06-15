@@ -33,6 +33,10 @@ The third character represents the impact that the change had on the code.
 
 udp2tcp unversioned (live SVN - see revision at the top)
 =======================================
+
+
+udp2tcp 0.0.2 (2008-06-15)
+=======================================
 c.- Usage of GCC function attributes
 c-= Refactoring of the folders scheme to a better one.
 c=+ Refactoring of the filters code and migration to a different scheme
