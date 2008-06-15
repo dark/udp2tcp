@@ -111,7 +111,7 @@ static void syslog_do(const log_t l,const log_level_t level,
 		      const char* filename, const int line, 
 #endif
 		      const char *format, va_list ap){
-  syslog(level,format,ap);
+  vsyslog(level,format,ap);
 }
 
 static void syslog_close(const log_t l){

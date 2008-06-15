@@ -54,7 +54,7 @@ int do_child(int udp_sock_fd,void *buf,size_t buflen,const struct sockaddr* send
   /* apply filter to input data (if needed) */
   if(filter!=NULL){
     f_last_ret = filter(buf, buflen, &out_buf, &out_buf_len, &extra_data, &extra_data_len, UDP2TCP);
-    F_DEBUG("Filter exited: %d byte(s) IN, %d byte(s) OUT, %d extra byte(s), status: %s\n",
+    F_DEBUG("Filter UDP2TCP exit: %d byte(s) IN, %d byte(s) OUT, %d extra byte(s), status: %s\n",
 	    buflen, out_buf_len, extra_data_len, filter_ret2str(f_last_ret));
 
     switch (f_last_ret){
@@ -119,11 +119,11 @@ int do_child(int udp_sock_fd,void *buf,size_t buflen,const struct sockaddr* send
       }
 
       f_last_ret = filter(local_buf, read_bytes, &out_buf, &out_buf_len, &extra_data, &extra_data_len, TCP2UDP);
-      F_DEBUG("Filter exited: %d byte(s) IN, %d byte(s) OUT, %d extra byte(s), status: %s\n",
+      F_DEBUG("Filter TCP2UDP exit: %d byte(s) IN, %d byte(s) OUT, %d extra byte(s), status: %s\n",
 	      read_bytes, out_buf_len, extra_data_len, filter_ret2str(f_last_ret));
       switch (f_last_ret){
       case ERROR:
-	F_WARN("UDP2TCP filter returned error, destroying child\n");
+	F_WARN("TCP2UDP filter returned error, destroying child\n");
 	return 1;
 	
       case IN_BUF_IS_OK:

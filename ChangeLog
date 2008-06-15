@@ -37,6 +37,7 @@ c.- Usage of GCC function attributes
 c-= Refactoring of the folders scheme to a better one.
 c=+ Refactoring of the filters code and migration to a different scheme
 c+= Addition and improvement of the command-line parsing function
+u-- Makefile enables debug info in the object files
 
 
 udp2tcp 0.0.1 (2008-06-11)
