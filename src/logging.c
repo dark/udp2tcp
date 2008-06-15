@@ -59,7 +59,7 @@ static struct {
   char* description;
 } levels[] = {
   {"console",CONSOLE,"Print data on console/terminal"},
-  {"log",    LOGFILE,"Dump all the informations on a text file"},
+  {"log",    LOGFILE,"Dump all the informations on a text file (not implemented yet)"},
   {"syslog", SYSLOG, "Use the system logger"},
   {NULL, -1, NULL} /* NULL-termination */
 };
