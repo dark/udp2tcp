@@ -7,7 +7,7 @@ OBJ = main.o udp2tcp.o $(LIBOBJ) # all the object files that make up the project
 CC = gcc		# compiler
 RM = rm -f 	# deletion command
 
-DEBUGFLAGS = -DDEBUG # enables debug messages
+DEBUGFLAGS = -g -DDEBUG # enables debug messages
 
 #### cross-platform macros ####
 CFLAGS = -O2 -pipe -Wall -Werror $(DEBUGFLAGS) # compiler switches

@@ -35,7 +35,7 @@ extern char *program_name;
 extern log_t logger;
 
 void print_usage(){
-  fprintf(stderr,"Usage: %s [-vvv] [-p <UDP_port>] [-h <TCP_dest_IP>] [-P <TCP_port>] [-f <filtername>] [-l <logger>]\n",
+  fprintf(stderr,"\nUsage: %s [-vvv] [-p <UDP_port>] [-h <TCP_dest_IP>] [-P <TCP_port>] [-f <filtername>] [-l <logger>]\n",
 	  program_name);
   fprintf(stderr,
 	  "  -v   Increase the program verbosity: display warnings\n"
@@ -46,15 +46,17 @@ void print_usage(){
 	  "  -P   The remote TCP host to which forward the data (default: %d)\n"
 	  "  -f   The filter to apply to the data in both directions (default: none)\n"
 	  "       Use 'list' to enumerate all the filters\n"
-	  "  -l   The logger facility to use (default: FIXME_WITH_A_MACRO)\n"
+	  "  -l   The logger facility to use (default: console)\n"
 	  "       Use 'list' to enumerate all the logging facilities\n"
 	  ,DFLT_UDP_PORT, DFLT_TCP_HOST, DFLT_TCP_PORT);
 }
 
 
-int handle_commandline(int argc, char* argv[], int* port_in, char** host_out, int* port_out, filter_t* filter, int* verbosity){
+int handle_commandline(int argc, char* argv[], int* port_in, char** host_out, int* port_out,
+		       filter_t* filter, int* verbosity, log_t* logger){
   int ret;
-  char *end_ptr;
+  char *end_ptr=NULL;
+  log_provider_t log_provider = -1;
   
   /* initialization */
   *port_in =-1;
@@ -64,7 +66,7 @@ int handle_commandline(int argc, char* argv[], int* port_in, char** host_out, in
   *verbosity=0;
 
   opterr=0;
-  while ((ret = getopt (argc, argv, "vp:h:P:d:l:")) != -1){
+  while ((ret = getopt (argc, argv, "vp:h:P:f:l:")) != -1){
     switch (ret)
       {
       case 'v':
@@ -74,7 +76,7 @@ int handle_commandline(int argc, char* argv[], int* port_in, char** host_out, in
       case 'p':
 	if(*port_in == -1){
 	  *port_in=strtol(optarg, &end_ptr, 10);
-	  if ( isspace((int)optarg) || (*port_in)<0 || (*port_in)>65535 || (*end_ptr)!='\0'){
+	  if ( (*port_in)<0 || (*port_in)>65535 || (*end_ptr)!='\0'){
 	    fprintf(stderr, "Invalid numeric option in argument '%s'\n", optarg);
 	    return 1;
 	  }
@@ -83,6 +85,7 @@ int handle_commandline(int argc, char* argv[], int* port_in, char** host_out, in
 	  fprintf(stderr, "Local UDP port defined multiple times: it was already %d\n", *port_in);
 	  return 1;
 	}
+
 	break;
 
       case 'h':
@@ -102,7 +105,7 @@ int handle_commandline(int argc, char* argv[], int* port_in, char** host_out, in
       case 'P':
 	if(*port_out == -1){
 	  *port_out=strtol(optarg, &end_ptr, 10);
-	  if ( isspace((int)optarg) || (*port_out)<0 || (*port_out)>65535 || (*end_ptr)!='\0'){
+	  if ( (*port_out)<0 || (*port_out)>65535 || (*end_ptr)!='\0'){
 	    fprintf(stderr, "Invalid numeric option in argument '%s'\n", optarg);
 	    return 1;
 	  }
@@ -113,8 +116,47 @@ int handle_commandline(int argc, char* argv[], int* port_in, char** host_out, in
 	}
 	break;
 
-#error handle -f
-#error handle -l
+      case 'f':
+	if(*filter == NULL){
+	  if (strcmp(optarg,"list")==0){
+	    // show a list of all the available filters
+	    fprintf(stderr,"\n-- This is the list of all the supported filters: --\n");
+	    filter_enumerate();
+	    exit(0);
+	  }
+
+	  *filter = filter_name2impl(optarg);
+	  if(*filter == NULL){
+	    fprintf(stderr, "Error: filter '%s' unknown (see 'list')\n", optarg);
+	    return 1;
+	  }
+	}
+	else{
+	  fprintf(stderr, "Multiple filters requested\n");
+	  return 1;
+	}
+	break;
+
+      case 'l':
+	if(log_provider == -1){
+	  if (strcmp(optarg,"list")==0){
+	    // show a list of all the available log providers
+	    fprintf(stderr,"\n-- This is the list of all the available log providers: --\n");
+	    logging_enumerate();
+	    exit(0);
+	  }
+
+	  log_provider = logging_str2provider(optarg);
+	  if(log_provider == -1){
+	    fprintf(stderr, "Error: log provider '%s' unknown (see 'list')\n", optarg);
+	    return 1;
+	  }
+	}
+	else{
+	  fprintf(stderr, "Multiple log providers requested\n");
+	  return 1;
+	}
+	break;
 
       case '?':
 	if (optopt == 'p' || optopt == 'h' || optopt == 'P' || optopt == 'd' || optopt == 'l')
@@ -126,7 +168,6 @@ int handle_commandline(int argc, char* argv[], int* port_in, char** host_out, in
 		   "Unknown option character `\\x%x'.\n",
 		   optopt);
 
-	print_usage();
 	return 1;
 	
       default:
@@ -135,6 +176,18 @@ int handle_commandline(int argc, char* argv[], int* port_in, char** host_out, in
 	return 1;
       }
   }
+
+  /* ** handle default values ** */
+  if (*port_in == -1)
+    *port_in = DFLT_UDP_PORT;
+  if (*host_out == NULL)
+    *host_out= DFLT_TCP_HOST;
+  if (*port_out == -1)
+    *port_out= DFLT_TCP_PORT;
+  if (log_provider == -1)
+    log_provider = DFLT_LOG_PROVIDER;
+
+  *logger = logging_start(log_provider, logging_verbosity2level(*verbosity) );
 
   return 0;
 }

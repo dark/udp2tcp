@@ -24,6 +24,7 @@
 
 #include <errno.h>
 #include "filters.h"
+#include "logging.h"
 
 #define PROJECT_NAME "udp2tcp"
 #define PROJECT_VER "0.0.2-alpha"
@@ -37,14 +38,17 @@
 #define DFLT_UDP_PORT 53
 #define DFLT_TCP_HOST "127.0.0.1"
 #define DFLT_TCP_PORT 53
+#define DFLT_LOG_PROVIDER CONSOLE
 
 /* helper functions */
 int handle_commandline(int argc, char* argv[],
-		       int* port_in, char** host_out, int* port_out, filter_t* filter, int* verbosity);
+		       int* port_in, char** host_out, int* port_out,
+		       filter_t* filter, int* verbosity, log_t *logger) __attribute__((warn_unused_result));
 int sock_createandbind(const int port);
 void loadTCPinfo(struct sockaddr** info, socklen_t* info_len, char* IP, int port);
 int do_child(int udp_sock_fd,void*buf,size_t buflen,const struct sockaddr* sender, const socklen_t sender_l,
-	     const struct sockaddr* recipient, const socklen_t recipient_l, filter_t filter);
+	     const struct sockaddr* recipient, const socklen_t recipient_l, filter_t filter)
+  __attribute__((warn_unused_result));
 
 /* look-and-feel and information messages */
 void print_usage();

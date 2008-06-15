@@ -182,3 +182,11 @@ log_level_t logging_verbosity2level(int verbosity){
   else
     return L_DEBUG;
 }
+
+void logging_enumerate(){
+  int i=0;
+  while(levels[i].l_name!=NULL){
+    fprintf(stderr, "%s - %s\n", levels[i].l_name, levels[i].description);
+    i++;
+  }
+}

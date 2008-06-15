@@ -76,20 +76,13 @@ int main (int argc, char *argv[]){
   program_name = basename(argv[0]);
 
   /* ** handle command line ** */
-  ret = handle_commandline(argc, argv, &port_in, &host_out, &port_out, &filter, &verbosity);
-  if (ret!=0) /* an error has occurred */
+  fprintf(stderr,"Starting %s\n", PROJECT_SIG);
+  ret = handle_commandline(argc, argv, &port_in, &host_out, &port_out, &filter, &verbosity, &logger);
+  if (ret!=0){
+    /* an error has occurred */
+    print_usage();
     return ret;
-  /* handle defaults */
-  if (port_in==-1)
-    port_in = DFLT_UDP_PORT;
-  if (host_out==NULL)
-    host_out= DFLT_TCP_HOST;
-  if (port_out==-1)
-    port_out= DFLT_TCP_PORT;
-
-#error Handle me!
-  logger=logging_start(CONSOLE,L_DEBUG);
-  F_INFO("Starting %s\n", PROJECT_SIG);
+  }
   F_INFO("Will forward from UDP %d to TCP %s:%d\n",port_in,host_out,port_out);
 
   /* ** setup the listening socket ** */

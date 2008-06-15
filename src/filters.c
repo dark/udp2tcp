@@ -19,6 +19,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "filters.h"
@@ -67,6 +68,15 @@ filter_t filter_name2impl(const char* name){
   }
   return NULL;
 }
+
+void filter_enumerate(){
+  int i=0;
+  while(filters[i].f_name!=NULL){
+    fprintf(stderr, "%s - %s\n", filters[i].f_name, filters[i].description);
+    i++;
+  }
+}
+
 
 /* == implemented filters == */
 filter_ret_t filter_dns(const void* in_buf, const size_t in_buf_len,
