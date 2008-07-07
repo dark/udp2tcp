@@ -25,10 +25,9 @@
 #include <errno.h>
 #include "filters.h"
 #include "logging.h"
+#include "../config.h"
 
-#define PROJECT_NAME "udp2tcp"
-#define PROJECT_VER "0.0.2"
-#define PROJECT_SIG PROJECT_NAME " v." PROJECT_VER ", by dark"
+#define PROJECT_SIG PACKAGE_NAME " v." PACKAGE_VERSION ", by dark"
 
 /* defines a dafe value for the network data handling buffers */
 #define LOCAL_BUFFER_SIZE 1500
