@@ -29,7 +29,7 @@
 
 #define PROJECT_SIG PACKAGE_NAME " v." PACKAGE_VERSION ", by dark"
 
-/* defines a dafe value for the network data handling buffers */
+/* defines a safe value for the network data handling buffers */
 #define LOCAL_BUFFER_SIZE 1500
 #define INTERRUPTED_BY_SIGNAL (errno == EINTR || errno == ECHILD)
 
