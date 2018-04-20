@@ -14,11 +14,11 @@ and your firewall mercilessly drops UDP datagrams.
 Website
 -------
 The official website is, at the moment:
-  http://udp2tcp.sourceforge.net/
+  https://github.com/dark/udp2tcp
 
 Copyright
 ---------
-udp2tcp is Copyright (C) 2008 Marco Leogrande <dark_knight_ita@users.sourceforge.net>
+udp2tcp is Copyright (C) 2008 Marco Leogrande <dark_knight_ita@gmail.com>
 
 License
 -------
