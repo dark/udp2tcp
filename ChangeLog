@@ -1,7 +1,6 @@
 ---------------------------
 -- ChangeLog for udp2tcp --
 ---------------------------
-$Id$
 
 This document contains all the changes made to udp2tcp in
 reverse chronological order, with the latest change at the top.

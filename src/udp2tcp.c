@@ -1,7 +1,6 @@
 /*
  udp2tcp
  Copyright (C) 2008 Marco Leogrande
- $Id$
  
  This file is part of udp2tcp.
  
